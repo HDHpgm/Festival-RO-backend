@@ -1,0 +1,2 @@
+webpackJsonp([6],{"28om":function(o,t){$(window).load(function(){$(".post-module").hover(function(){$(this).find(".description").stop().animate({height:"toggle",opacity:"toggle"},300)})})}});
+//# sourceMappingURL=6.a2db8763966530be9b3a.js.map

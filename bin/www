@@ -1,0 +1,55 @@
+
+// 모듈 불러오기
+var mongoose = require('mongoose');
+var http = require('http');
+var dotenv = require('dotenv');
+var app = require('../app'); // express
+
+// .env 파일에 선언된 정보를 불러옵니다.
+dotenv.config()
+
+// .env에 PORT 속성이 있다면 그 값을 사용하고, 없다면 기본값으로 3000번 포트를 이용
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port); 
+
+ 
+// http 모듈을 이용하여 웹 서버 만들기
+var server = http.createServer(app); 
+ /**
+  * Listen on provided port, on all network interfaces.
+  */
+ 
+ // DB connect 후에 server listen
+ mongoose.set('useUnifiedTopology',true);
+ mongoose.set('useNewUrlParser',true);
+ mongoose.set('useCreateIndex', true);
+ // 암호화를 위해 .env에서 MONGO_URL을 불러와 MongoDB와 연결
+ mongoose.connect(process.env.MONGO_URL)
+ .then(() => {
+   server.listen(port, () => {
+     console.log('listening to port 3000');
+     console.log('DB Connected');
+   });
+ }).catch(err => console.log(err));
+ 
+
+/**   
+  포트가 이상할때 포트를 교정해주기 위해서 normaliizePort라는 함수를 작성
+  parseInt 합수에서 우리가 설정한 포트를 10진수 인트값으로 변환한다.
+  parseint 함순는 첫번쨰 인자를 정수형으로 변환하는 함수인데 뒤의 10은 십진수로 변환한다는 것을 의미한다.
+  만약 정수형으로 변환이 안되면 nan 값을 반환하게 되는데,
+  그럴경우 isNaN함수를 통해 그냥 리턴해버리고 정수형일 시 양수인지 검사하여 리턴하는 그런 형태이다. 
+*/ 
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    return val;
+  }
+
+  if (port >= 0) {
+    return port;
+  }
+
+  return false;
+}
